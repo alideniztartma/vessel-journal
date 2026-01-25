@@ -20,10 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_cancel: "Cancel",
             btn_save: "Save",
             btn_update: "Update",
+            btn_edit: "Edit",
             btn_export: "Export Data (JSON)",
             btn_import: "Import Data",
             modal_new: "New Entry",
             modal_edit: "Edit Entry",
+            modal_view: "View Entry",
             ph_title: "Title of the day...",
             ph_content: "Write your thoughts...",
             ph_tags: "Tags (comma separated)...",
@@ -62,10 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_cancel: "İptal",
             btn_save: "Kaydet",
             btn_update: "Güncelle",
+            btn_edit: "Düzenle",
             btn_export: "Veriyi İndir (JSON)",
             btn_import: "Veri Yükle",
             modal_new: "Yeni Anı",
             modal_edit: "Anıyı Düzenle",
+            modal_view: "Anıyı Görüntüle",
             ph_title: "Günün başlığı...",
             ph_content: "Düşüncelerini yaz...",
             ph_tags: "Etiketler (virgülle ayır)...",
@@ -104,10 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_cancel: "Cancelar",
             btn_save: "Guardar",
             btn_update: "Actualizar",
+            btn_edit: "Editar",
             btn_export: "Exportar Datos",
             btn_import: "Importar Datos",
             modal_new: "Nueva Entrada",
             modal_edit: "Editar Entrada",
+            modal_view: "Ver Entrada",
             ph_title: "Título del día...",
             ph_content: "Escribe tus pensamientos...",
             ph_tags: "Etiquetas...",
@@ -151,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModalBtn: document.getElementById('close-modal'),
         saveBtn: document.getElementById('save-entry'),
         modalTitle: document.getElementById('modal-title'),
+        editEntryBtn: document.getElementById('edit-entry-btn'),
         promptBtn: document.getElementById('prompt-btn'),
 
         // Inputs
@@ -165,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filterFavBtn: document.getElementById('filter-fav-btn'),
         dateDisplay: document.getElementById('current-date'),
         wordCount: document.getElementById('word-count'),
+        viewContent: document.getElementById('view-content-container'),
 
         // Settings
         langSelect: document.getElementById('lang-select'),
@@ -366,6 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openModal(entry = null) {
         updateDateDisplay();
         app.modal.classList.add('active');
+
         if (entry) {
             editingId = entry.id;
             app.inputTitle.value = entry.title;
@@ -373,10 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
             app.inputTags.value = entry.tags ? entry.tags.join(', ') : '';
             currentPhotos = entry.photos || [];
             renderImagePreviews();
-            renderImagePreviews();
             document.querySelector(`input[name="mood"][value="${entry.mood}"]`).checked = true;
-
-
 
             // Time Capsule
             if (entry.lockDate) {
@@ -389,16 +395,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 app.capsuleDate.value = '';
             }
 
-            app.modalTitle.textContent = i18n[settings.lang].modal_edit;
-            app.saveBtn.textContent = i18n[settings.lang].btn_update;
+            // Set to View Mode
+            setModalMode('view');
         } else {
             editingId = null;
             resetForm();
-            resetForm();
-            app.modalTitle.textContent = i18n[settings.lang].modal_new;
-            app.saveBtn.textContent = i18n[settings.lang].btn_save;
+            setModalMode('edit');
         }
         updateWordCount();
+    }
+
+    function setModalMode(mode) {
+        const isView = mode === 'view';
+        app.modal.dataset.mode = mode;
+
+        // Toggle visibility of elements
+        app.inputTitle.disabled = isView;
+        app.inputTags.disabled = isView;
+        app.inputContent.classList.toggle('hidden', isView);
+        app.viewContent.classList.toggle('hidden', !isView);
+
+        // Mood selector
+        document.querySelectorAll('.mood-selector input').forEach(input => input.disabled = isView);
+
+        // Buttons
+        app.editEntryBtn.classList.toggle('hidden', !isView);
+        app.saveBtn.classList.toggle('hidden', isView);
+        app.promptBtn.classList.toggle('hidden', isView);
+        app.addPhotoBtn.classList.toggle('hidden', isView);
+        app.capsuleSwitch.disabled = isView;
+        app.capsuleDate.disabled = isView;
+
+        if (isView) {
+            app.modalTitle.textContent = i18n[settings.lang].modal_view;
+            app.viewContent.innerHTML = parseMarkdown(app.inputContent.value);
+        } else {
+            app.modalTitle.textContent = editingId ? i18n[settings.lang].modal_edit : i18n[settings.lang].modal_new;
+            app.saveBtn.textContent = editingId ? i18n[settings.lang].btn_update : i18n[settings.lang].btn_save;
+        }
     }
 
     function saveEntry() {
@@ -788,7 +822,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="card-date"><span class="day">${day}</span><span class="month">${month}</span></span>
         <div class="card-actions">
         <div class="card-mood"><i class="${moodIcons[entry.mood] || 'ri-emotion-line'}"></i></div>
-        ${!isLocked ? `<button class="edit-btn"><i class="ri-pencil-line"></i></button>` : ''}
         <button class="delete-btn"><i class="ri-delete-bin-line"></i></button>
         </div>
         </div>
@@ -803,10 +836,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Event Listeners
         if (!isLocked) {
-            article.querySelector('.edit-btn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                openModal(entry);
-            });
             article.addEventListener('click', () => openModal(entry));
         }
 
@@ -884,6 +913,7 @@ document.addEventListener('DOMContentLoaded', () => {
         app.navBtns.forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.target)));
         app.addBtn.addEventListener('click', () => openModal());
         app.closeModalBtn.addEventListener('click', () => app.modal.classList.remove('active'));
+        app.editEntryBtn.addEventListener('click', () => setModalMode('edit'));
         app.saveBtn.addEventListener('click', saveEntry);
         app.promptBtn.addEventListener('click', () => {
             const p = i18n[settings.lang].prompts;

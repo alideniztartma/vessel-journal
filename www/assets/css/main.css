@@ -617,6 +617,11 @@ body {
     font-size: 1.1rem;
 }
 
+.modal-header-actions {
+    display: flex;
+    gap: 12px;
+}
+
 .text-btn {
     background: none;
     border: none;
@@ -739,6 +744,24 @@ body {
     line-height: 1.6;
     resize: none;
     margin-top: 10px;
+}
+
+.view-content {
+    flex: 1;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-top: 10px;
+    overflow-y: auto;
+    color: var(--text-primary);
+}
+
+.view-content ul {
+    padding-left: 20px;
+    margin: 10px 0;
+}
+
+.view-content li {
+    list-style-type: disc;
 }
 
 /* Markdown Styles */

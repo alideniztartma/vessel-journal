@@ -192,7 +192,7 @@
                         <span data-i18n="settings_clear">Clear All Data</span>
                     </button>
 
-                    <div class="app-version">Vessel Journal v1.0.1</div>
+                    <div class="app-version">Vessel Journal v1.0.3</div>
                 </div>
             </section>
 
@@ -204,7 +204,10 @@
                 <div class="modal-header">
                     <button class="text-btn" id="close-modal" data-i18n="btn_cancel">Cancel</button>
                     <span class="modal-title" id="modal-title" data-i18n="modal_new">New Entry</span>
-                    <button class="text-btn primary" id="save-entry" data-i18n="btn_save">Save</button>
+                    <div class="modal-header-actions">
+                        <button class="text-btn primary hidden" id="edit-entry-btn" data-i18n="btn_edit">Edit</button>
+                        <button class="text-btn primary" id="save-entry" data-i18n="btn_save">Save</button>
+                    </div>
                 </div>
 
                 <div class="modal-body">
@@ -266,6 +269,7 @@
 
                     <div id="image-preview-container" class="image-preview-container"></div>
 
+                    <div id="view-content-container" class="view-content hidden"></div>
                     <textarea id="entry-content" class="editor-input content" placeholder="Write..."
                         data-i18n-placeholder="ph_content"></textarea>
                 </div>
