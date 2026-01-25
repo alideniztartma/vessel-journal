@@ -8,14 +8,18 @@
 
 /* --- DESIGN SYSTEM --- */
 :root {
-    --bg-color: #F2F0E9;
+    --bg-color: #CAF0F8;
     --card-bg: #FFFFFF;
-    --text-primary: #2C2C34;
-    --text-secondary: #6E6E78;
-    --accent-color: #606C38;
-    --accent-hover: #283618;
+    --text-primary: #03045E;
+    --text-secondary: #0077B6;
+    --accent-color: #0077B6;
+    --accent-hover: #023E8A;
     --danger-color: #BC4749;
-    --tag-bg: #EAE8DF;
+    --tag-bg: #90E0EF;
+    --mood-happy: #FFD166;
+    --mood-calm: #606C38;
+    --mood-sad: #118AB2;
+    --mood-excited: #EF476F;
 
     --spacing-sm: 8px;
     --spacing-md: 16px;
@@ -30,15 +34,27 @@
 }
 
 /* --- THEMES --- */
-/* Ocean (Blue/Teal) */
+/* Forest (Green - Old Default) */
+[data-theme="default"] {
+    --bg-color: #F2F0E9;
+    --card-bg: #FFFFFF;
+    --text-primary: #2C2C34;
+    --text-secondary: #6E6E78;
+    --accent-color: #606C38;
+    --accent-hover: #283618;
+    --tag-bg: #EAE8DF;
+}
+
+/* Ocean (Blue/Teal - Now Default) */
 [data-theme="ocean"] {
-    --primary-color: #48CAE4;
-    --secondary-color: #0077B6;
     --bg-color: #CAF0F8;
     --card-bg: #FFFFFF;
     --text-primary: #03045E;
     --text-secondary: #0077B6;
-    --border-color: #90E0EF;
+    --accent-color: #0077B6;
+    --accent-hover: #023E8A;
+    --tag-bg: #90E0EF;
+    --mood-calm: #0077B6;
 }
 
 /* Sunset (Orange/Pink) */
@@ -64,23 +80,29 @@
 }
 
 /* Dark Theme (Override) */
+/* Dark Theme (Default - Ocean) */
 body.dark-theme {
-    --bg-color: #121212;
-    --card-bg: #1E1E1E;
-    --text-primary: #E0E0E0;
-    --text-secondary: #A0A0A0;
-    --border-color: #333333;
-    --tag-bg: #2C2C32;
-}
-
-/* Dark Theme + Ocean */
-body.dark-theme[data-theme="ocean"] {
     --bg-color: #0A192F;
     --card-bg: #112240;
     --text-primary: #E6F1FF;
     --text-secondary: #8892B0;
     --border-color: #233554;
+    --tag-bg: #172A45;
+    --accent-color: #0077B6;
+    --accent-hover: #023E8A;
 }
+
+/* Dark Theme + Forest (Green) */
+body.dark-theme[data-theme="default"] {
+    --bg-color: #1A2F1A;
+    --card-bg: #243B24;
+    --text-primary: #E0F2E0;
+    --text-secondary: #A0CFA0;
+    --accent-color: #606C38;
+    --tag-bg: #2C3E2C;
+}
+
+
 
 /* Dark Theme + Sunset */
 body.dark-theme[data-theme="sunset"] {
@@ -115,6 +137,8 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     transition: background-color var(--transition-speed), color var(--transition-speed);
+    background-image: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2));
+    background-attachment: fixed;
 }
 
 /* --- LAYOUT --- */
@@ -252,8 +276,8 @@ body {
 
 /* On This Day */
 .otd-card {
-    background: linear-gradient(135deg, rgba(96, 108, 56, 0.1), rgba(255, 255, 255, 0));
-    border: 1px solid rgba(96, 108, 56, 0.2);
+    background: linear-gradient(135deg, rgba(0, 119, 182, 0.1), rgba(255, 255, 255, 0));
+    border: 1px solid rgba(0, 119, 182, 0.2);
     border-radius: var(--border-radius);
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-md);
@@ -381,6 +405,7 @@ body {
     color: var(--text-secondary);
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-bottom: var(--spacing-sm);
@@ -519,23 +544,27 @@ body {
 }
 
 .cal-day.mood-happy {
-    background-color: rgba(255, 209, 102, 0.4);
+    background-color: var(--mood-happy);
+    opacity: 0.6;
     color: #8a6c25;
 }
 
 .cal-day.mood-calm {
-    background-color: rgba(96, 108, 56, 0.4);
-    color: #283618;
+    background-color: var(--mood-calm);
+    opacity: 0.6;
+    color: white;
 }
 
 .cal-day.mood-sad {
-    background-color: rgba(17, 138, 178, 0.4);
-    color: #084c63;
+    background-color: var(--mood-sad);
+    opacity: 0.6;
+    color: white;
 }
 
 .cal-day.mood-excited {
-    background-color: rgba(239, 71, 111, 0.4);
-    color: #82152f;
+    background-color: var(--mood-excited);
+    opacity: 0.6;
+    color: white;
 }
 
 /* Modal */
@@ -646,7 +675,7 @@ body {
 
 .prompt-btn:hover {
     transform: rotate(15deg) scale(1.1);
-    background-color: rgba(96, 108, 56, 0.1);
+    background-color: rgba(0, 119, 182, 0.1);
 }
 
 .mood-selector {
@@ -932,7 +961,7 @@ body.dark-theme .star-btn:hover {
     position: absolute;
     top: -25px;
     /* Floats above */
-    box-shadow: 0 8px 16px rgba(96, 108, 56, 0.4);
+    box-shadow: 0 8px 16px rgba(0, 119, 182, 0.4);
     transition: transform 0.2s;
 }
 
@@ -1124,17 +1153,6 @@ input:checked+.slider:before {
     opacity: 1;
 }
 
-/* Dark Mode */
-body.dark-theme {
-    --bg-color: #121214;
-    --card-bg: #1C1C22;
-    --text-primary: #EAEAEA;
-    --text-secondary: #A0A0A5;
-    --accent-color: #8A9A5B;
-    --tag-bg: #2C2C32;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
 
 
 
@@ -1147,8 +1165,8 @@ body.dark-theme .pin-keypad button {
 }
 
 body.dark-theme .otd-card {
-    background: linear-gradient(135deg, rgba(138, 154, 91, 0.15), rgba(28, 28, 34, 0));
-    border-color: rgba(138, 154, 91, 0.2);
+    background: linear-gradient(135deg, rgba(0, 119, 182, 0.15), rgba(28, 28, 34, 0));
+    border-color: rgba(0, 119, 182, 0.2);
 }
 
 .view {

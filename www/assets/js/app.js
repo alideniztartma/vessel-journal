@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ph_photos: "Add Photos",
             prompts: ["What made you smile today?", "What is a lesson you learned recently?", "Describe a moment of peace."],
             moods: { happy: "Happy", calm: "Calm", sad: "Sad", excited: "Excited" },
-            themes: { default: "Default (Green)", ocean: "Ocean (Blue)", sunset: "Sunset (Orange)", lavender: "Lavender (Purple)", dark: "Dark Mode" },
+            themes: { ocean: "Ocean (Default)", default: "Forest (Green)", sunset: "Sunset (Orange)", lavender: "Lavender (Purple)", dark: "Dark Mode" },
 
             lbl_time_capsule: "Time Capsule",
             lbl_lock_until: "Lock until:",
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ph_photos: "Fotoğraf Ekle",
             prompts: ["Bugün seni ne gülümsetti?", "Son zamanlarda öğrendiğin bir ders?", "Huzurlu bir anı tarif et."],
             moods: { happy: "Mutlu", calm: "Sakin", sad: "Üzgün", excited: "Heyecanlı" },
-            themes: { default: "Varsayılan (Yeşil)", ocean: "Okyanus (Mavi)", sunset: "Gün Batımı (Turuncu)", lavender: "Lavanta (Mor)", dark: "Karanlık Mod" },
+            themes: { ocean: "Okyanus (Varsayılan)", default: "Orman (Yeşil)", sunset: "Gün Batımı (Turuncu)", lavender: "Lavanta (Mor)", dark: "Karanlık Mod" },
 
             lbl_time_capsule: "Zaman Kapsülü",
             lbl_lock_until: "Kilit tarihi:",
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ph_photos: "Añadir Fotos",
             prompts: ["¿Qué te hizo sonreír hoy?", "¿Qué lección aprendiste?", "Describe un momento de paz."],
             moods: { happy: "Feliz", calm: "Calmado", sad: "Triste", excited: "Emocionado" },
-            themes: { default: "Por Defecto (Verde)", ocean: "Océano (Azul)", sunset: "Atardecer (Naranja)", lavender: "Lavanda (Morado)", dark: "Modo Oscuro" },
+            themes: { ocean: "Océano (Por Defecto)", default: "Bosque (Verde)", sunset: "Atardecer (Naranja)", lavender: "Lavanda (Morado)", dark: "Modo Oscuro" },
 
             lbl_time_capsule: "Cápsula del Tiempo",
             lbl_lock_until: "Bloquear hasta:",
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- STATE MANAGEMENT ---
     let entries = JSON.parse(localStorage.getItem('vessel_entries')) || [];
-    let settings = JSON.parse(localStorage.getItem('vessel_settings')) || { theme: 'default', darkMode: false, lang: 'en', pinEnabled: false, pinCode: null };
+    let settings = JSON.parse(localStorage.getItem('vessel_settings')) || { theme: 'ocean', darkMode: false, lang: 'en', pinEnabled: false, pinCode: null };
 
     let editingId = null;
     let currentCalendarDate = new Date();
@@ -226,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderStreak();
         renderOnThisDay();
 
-        setupEventListeners();
         setupEventListeners();
 
         // Initialize Calendar and Stats
@@ -332,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Remove old theme attributes
         document.body.removeAttribute('data-theme');
 
-        if (theme !== 'default') {
+        if (theme !== 'ocean') {
             document.body.setAttribute('data-theme', theme);
         }
     }
@@ -593,7 +592,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const colors = { happy: '#FFD166', calm: '#606C38', sad: '#118AB2', excited: '#EF476F' };
+        const colors = {
+            happy: '#FFD166',
+            calm: settings.theme === 'ocean' ? '#0077B6' : '#606C38',
+            sad: '#118AB2',
+            excited: '#EF476F'
+        };
 
         let currentDeg = 0;
         let gradientStr = [];
@@ -918,10 +922,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         app.prevMonthBtn.addEventListener('click', () => {
+            currentCalendarDate.setDate(1); // Avoid month skipping (e.g. Mar 31 -> Feb 28)
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
             renderCalendar();
         });
         app.nextMonthBtn.addEventListener('click', () => {
+            currentCalendarDate.setDate(1);
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
             renderCalendar();
         });
